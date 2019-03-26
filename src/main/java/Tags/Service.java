@@ -25,13 +25,11 @@ public class Service extends Thread {
                 if (messages.isEmpty()) {
                     Thread.sleep(500);
                     continue;    //Ждем пока что то придет от датчиков
-                } else System.out.println("messages is not empty");    //Это для диагностики
+                }
                 Message message = messages.pollFirst();     //Забираем из очереди первый message
                 if (parsingUID.containsKey(message.getUid())) {
-                    System.out.println("Train UID: " + message.getUid() + "is parsing");
                     parsingUID.get(message.getUid()).add(message);
                 } else {
-                    System.out.println("Train UID: " + message.getUid() + " is new train!!!");
                     parsingUID.put(message.getUid(), new ArrayList<>(Arrays.asList(message)));
                     new Thread(new UidCheckingThread(message)).start();
                 }
@@ -56,8 +54,6 @@ public class Service extends Thread {
         }
 
         public void run() {
-
-            System.out.println("Thread started " + Thread.currentThread().getName() + "UID #" + uid);
             try {
                 while (run) {
                     int size = listMessages.size();
@@ -66,7 +62,6 @@ public class Service extends Thread {
                         System.out.println("Поезд №" + listMessages.get(0).getUid() + " не покинул перегон");
                         softCheck(listMessages);
                     } else if (listMessages.size() == size) { // будем считать что поезд уехал, и мы можем проверить первую и последнюю точку видимости
-                        System.out.println("Thread " + Thread.currentThread().getName() + " UID #" + uid + " lenght " + listMessages.size());
                         strongCheck(listMessages);
                         run = false;
                     } else throw new Exception("Что то пошло не так!!!");
