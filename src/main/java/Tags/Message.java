@@ -2,6 +2,8 @@ package Tags;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
+import java.util.Objects;
+
 @JsonAutoDetect
 public class Message {
 
@@ -41,7 +43,23 @@ public class Message {
         this.antenna = antenna;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Message)) return false;
+        Message message = (Message) o;
+        return uid == message.uid &&
+                antenna == message.antenna &&
+                Objects.equals(timestamp, message.timestamp);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(timestamp, uid, antenna);
+    }
 
-
+    @Override
+    public String toString() {
+        return timestamp + " " + uid + " " + antenna;
+    }
 }
